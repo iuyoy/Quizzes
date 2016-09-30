@@ -1,5 +1,8 @@
 # configs
 /src/public/config.php
 
+#cache
+/src/cache/
+
 # demends
-dememds.md
+demends.md
