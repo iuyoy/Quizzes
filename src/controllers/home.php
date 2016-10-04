@@ -74,7 +74,6 @@ class HomeAction{
     }
 
     public function exam($request, $response, $args) {
-        $_SESSION['uid'] ='123';
         $grade = 0;
         $answers = $request->getParsedBody();
         $sql = "SELECT id,correct FROM questions";
@@ -89,41 +88,41 @@ class HomeAction{
             $prepare = $this->ci->db->prepare($sql);
             $prepare -> execute(array(":uid"=>$_SESSION['uid']));
             $user = $prepare->fetch();
-            $user["finishedtime"] = date('Y-m-d H:i:s',time());
-            $gap = (strtotime($user["finishedtime"])-strtotime($user['starttime']));
-            if($user["sign"]===0 && $gap < 3720){
-                $sql = "INSERT INTO answers(qid,uid,answer,sign) VALUES(:qid,:uid,:answer,:sign)";
-                $prepare = $this->ci->db->prepare($sql);
-                foreach ($answers as $qid => $option) {
-                    if($option == $corrects[$qid]){
-                        $grade += 1;
-                        $sign = '1';
-                    }else{
-                        $sign = '0';
-                    }
-                    $prepare -> execute(array(":qid"=>$qid,":uid"=>$_SESSION['uid'],":answer"=>$option,':sign'=>$sign));
-                }
-                $sql = "UPDATE users SET `point` = :grade,`finishedtime` = :finishedtime, sign = 1 WHERE id = :uid";
-                $prepare = $this->ci->db->prepare($sql);
-                $prepare -> execute(array(":grade"=>strval($grade),":finishedtime"=>$user['finishedtime'],":uid"=>$_SESSION['uid']));
-                unset($_SESSION['uid']);
-                $response->getBody()->write("考试结束，耗时".strval((int)($gap/60))."分".strval($gap%60)."秒，祝您取得好成绩！");
-            }else{
-                if($user["sign"]===0){
-                    $sql = "UPDATE users SET `sign` = -1 WHERE id = :uid";
+            if($user){
+                $user["finishedtime"] = date('Y-m-d H:i:s',time());
+                $gap = (strtotime($user["finishedtime"])-strtotime($user['starttime']));
+                if($user["sign"] === '0' && $gap < 3720){
+                    $sql = "INSERT INTO answers(qid,uid,answer,sign) VALUES(:qid,:uid,:answer,:sign)";
                     $prepare = $this->ci->db->prepare($sql);
-                    $prepare -> execute(array());
-                    $response->getBody()->write("您已超时，本次成绩作废！");
+                    foreach ($answers as $qid => $option) {
+                        if($option == $corrects[$qid]){
+                            $grade += 1;
+                            $sign = '1';
+                        }else{
+                            $sign = '0';
+                        }
+                        $prepare -> execute(array(":qid"=>$qid,":uid"=>$_SESSION['uid'],":answer"=>$option,':sign'=>$sign));
+                    }
+                    $sql = "UPDATE users SET `point` = :grade,`finishedtime` = :finishedtime, sign = 1 WHERE id = :uid";
+                    $prepare = $this->ci->db->prepare($sql);
+                    $prepare -> execute(array(":grade"=>strval($grade),":finishedtime"=>$user['finishedtime'],":uid"=>$_SESSION['uid']));
+                    unset($_SESSION['uid']);
+                    $response->getBody()->write("考试结束，耗时".strval((int)($gap/60))."分".strval($gap%60)."秒，祝您取得好成绩！");
+                }else{
+                    if($user["sign"]=== '0' ){
+                        $sql = "UPDATE users SET `sign` = -1 WHERE id = :uid";
+                        $prepare = $this->ci->db->prepare($sql);
+                        $prepare -> execute(array());
+                        $response->getBody()->write("您已超时，本次成绩作废！");
+                    }
+                    $response->getBody()->write("您已经答过题目了。");
                 }
-                $response->getBody()->write("您已经答过题目了。");
+            }else{
+                $response->getBody()->write("出现未知错误，请重写填写信息，要是再次发生请联系管理员。");
             }
-
         }else{
             $response->getBody()->write("请填写个人信息！");
         }
-
-        // var_dump($request->getParsedBody());
-        // $response = $this->ci->view->render($response, "index.twig", $this->data);
         return $response;
     }
 }
