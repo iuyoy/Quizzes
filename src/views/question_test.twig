@@ -1,0 +1,85 @@
+{% extends "base.twig" %} {% block body %}
+<!-- Header -->
+<header>
+    <center>
+        <h1>{{ webinfo["website_name"] }}</h1>
+    </center>
+</header>
+<!-- Content -->
+<div class="container">
+    <form role="form">
+        <div class="panel panel-primary quiz">
+            <div class="panel-heading type">
+                <h3 class="panel-title">判断题</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="question">
+                    1.丹麦的廉政建设成就举世公认,其制定了多部专门的反腐败法典用来治理腐败。
+                </div>
+                <div class="options">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="1" id="q_1_o_1" value="1">正确
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="1" id="q_1_o_2" value="0">错误
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-success">下一题</button>
+
+            </div>
+        </div>
+
+
+        <div class="alert alert-danger hidden" role="alert">...</div>
+        <div class="panel panel-primary quiz">
+            <div class="panel-heading type">
+                <h3 class="panel-title">判断题</h3>
+            </div>
+            <div class="panel-body">
+                <div class="question">
+                    1.丹麦的廉政建设成就举世公认,其制定了多部专门的反腐败法典用来治理腐败。
+                </div>
+                <div class="options">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="1" id="q_1_o_1" value="1">正确
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="1" id="q_1_o_2" value="0">错误
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">确认提交</button>
+    </form>
+
+
+        <div class="progress col-md-10">
+            <div class="progress-bar progress-bar-danger progress-bar-striped rolling" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">
+
+            </div>
+        </div>
+        <div class="col-md-2">
+            剩余60min
+        </div>
+</div>
+
+<script>
+    var data =
+        '{"1":{"question":"1.\u4e39\u9ea6\u7684\u5ec9\u653f\u5efa\u8bbe\u6210\u5c31\u4e3e\u4e16\u516c\u8ba4,\u5176\u5236\u5b9a\u4e86\u591a\u90e8\u4e13\u95e8\u7684\u53cd\u8150\u8d25\u6cd5\u5178\u7528\u6765\u6cbb\u7406\u8150\u8d25\u3002","type":"true-false","options":["\u9519\u8bef","\u6b63\u786e"]},"2":{"question":"2.\u4e7e\u9686\u7687\u5e1d\u5357\u5de1\u9898\u8bd7\u201c\u5faa\u540f\u5f53\u5e74\u9f50\u56fd\u5218,\u5927\u94b1\u7559\u4e00\u8bdd\u5343\u79cb\u3002\u800c\u4eca\u82e5\u95ee\u4eb2\u6c11\u8005,\u5b9a\u9053\u4e00\u94b1\u4e0d\u6562\u7559\u201d,\u79f0\u8d5e\u7684\u662f\u6e05\u4ee3\u540d\u81e3\u5218\u7f57\u9505\u3002","type":"true-false","options":["\u9519\u8bef","\u6b63\u786e"]}}'
+</script>
+
+<center>
+    <button onclick="start(data)">test</button>
+</center>
+
+{% endblock %}

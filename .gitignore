@@ -5,4 +5,8 @@
 /src/cache/
 
 # demends
+demends/
 demends.md
+
+# js language
+/assets/js/language

@@ -1,0 +1,65 @@
+.sub-container {
+    margin: 0 auto;
+    position: relative;
+    background: #FCFCFC;
+    border: 1px solid #dedede;
+    box-shadow: 0 1px 5px #D9D9D9, inset 0 10px 20px #F1F1F1;
+    -o-box-shadow: 0 1px 5px #D9D9D9, inset 0 10px 20px #F1F1F1;
+    -webkit-box-shadow: 0 1px 5px #D9D9D9, inset 0 10px 20px #F1F1F1;
+    -moz-box-shadow: 0 1px 5px #D9D9D9, inset 0 10px 20px #F1F1F1;
+    border-radius: 20px 20px 20px 20px;
+    position: relative;
+    width: 550px;
+    text-align: center;
+    font-family: "Microsoft yahei", sans-serif;
+    padding: 0 10px 0 10px;
+    min-height: 400px;
+}
+
+.sub-container h2, .regulation h4 {
+    line-height: 2em;
+}
+
+@media (min-width: 1200px) {
+    .regulation {
+        float: left;
+    }
+    .register {
+        float: right;
+    }
+}
+
+.regulation, .register {
+    margin-top: 20px;
+    line-height: 3em;
+}
+
+.regulation {
+    padding: 0;
+}
+
+.register .form-group {
+    padding-top: 7px;
+    margin-bottom: 0;
+}
+
+.register i {
+    padding-top: 10px;
+}
+
+.register input {
+    margin-top: 8px;
+}
+
+.register button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.progress {
+    margin-left: -15px;
+}
+
+.alert {
+    margin-top: 10px;
+}

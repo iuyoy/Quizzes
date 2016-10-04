@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require 'src/vendor/autoload.php';
 require 'src/public/config.php';
@@ -11,7 +12,8 @@ $app = new \Slim\App(["settings" => $config]);
 $container = $app->getContainer();
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('src/views', [
-        'cache' => 'src/cache'
+        #'cache' => 'src/cache'
+        'cache' => false
     ]);
     $view->addExtension(new \Slim\Views\TwigExtension(
         $container['router'],
@@ -20,6 +22,7 @@ $container['view'] = function ($container) {
 
     return $view;
 };
+
 $container['db'] = function ($c) {
     $db = $c['settings']['db'];
     $pdo = new PDO("mysql:host=" . $db['host'] . ";dbname=" . $db['dbname'],
@@ -28,12 +31,19 @@ $container['db'] = function ($c) {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $pdo;
 };
+$GLOBALS['webinfo'] = array();
+$result = $container->db->query("SELECT config,value FROM configs")->fetchAll();
+foreach ($result as $conf) {
+    $GLOBALS['webinfo'][$conf['config']] = $conf['value'];
+}
 
-$app->get('/{params:.*}', function (Request $request, Response $response) {
-    $name = $request->getAttribute('name');
-    $response = $this->view->render($response, "index.twig");
 
-    return $response;
-});
+// controllers
+require 'src/controllers/home.php';
+
+$app->get('/test', '\HomeAction:test');
+$app->post('/exam', '\HomeAction:exam');
+$app->get('/{params:.*}', '\HomeAction:homepage');
+$app->post('/{params:.*}', '\HomeAction:register');
 
 $app->run();
