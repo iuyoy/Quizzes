@@ -13,7 +13,7 @@ $container = $app->getContainer();
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig('src/views', [
         #'cache' => 'src/cache'
-        'cache' => false
+        'cache' => false#For delevelopment.
     ]);
     $view->addExtension(new \Slim\Views\TwigExtension(
         $container['router'],
@@ -29,6 +29,7 @@ $container['db'] = function ($c) {
         $db['user'], $db['pass']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $pdo->query("SET NAMES UTF8");
     return $pdo;
 };
 $GLOBALS['webinfo'] = array();
