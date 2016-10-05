@@ -1,0 +1,43 @@
+{% extends "manage/base.twig" %} {% block body %}
+<div class="reports">
+    <h3><b>得分情况</b></h3>
+    {% if reports|length > 0 %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>姓名</th>
+                <th>学院</th>
+                <th>专业</th>
+                <th>电话</th>
+                <th class="success">得分</th>
+                <th>开始时间</th>
+                <th>结束时间</th>
+                <th class="info">耗时</th>
+                <th>选项<th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports%}
+            <tr>
+                <td>{{ report.id }}</td>
+                <td>{{ report.name }}</td>
+                <td>{{ report.college }}</td>
+                <td>{{ report.major }}</td>
+                <td>{{ report.tel }}</td>
+                <td class="success">{{ report.point }}</td>
+                <td>{{ report.starttime }}</td>
+                <td>{{ report.finishtime }}</td>
+                <td class="info">{{ report.spenttime//60 }}分{{ report.spenttime%60 }}秒</td>
+                <td><a href="{{ uri.base }}/manage/report/{{ report.id }}">查看详情</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>
+            暂时还没有人答题
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

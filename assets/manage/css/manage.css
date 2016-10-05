@@ -1,0 +1,54 @@
+html, body{
+    height: 100%;
+}
+nav,.navbar{
+    margin-bottom: 0;
+}
+.container-full{
+    top:50px;
+    width: 100%;
+    position: absolute;
+    top: 50px;
+    bottom: 0px;
+    left: 0px;
+    /*position: absolute;*/
+}
+.left{
+    background-color: #EAEAEA;
+    padding-top: 4px;
+    padding-right: 0px;
+    padding-left: 0px;
+    height: 100%;
+}
+.left ul li a{
+    border-radius: 0;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    color: #fff;
+    background-color: #969696;
+}
+a {
+    color: #777;
+    text-decoration: none;
+}
+.right{
+    height:100%;
+}
+
+.login{
+    margin-top:60px;
+    padding: 0px 30px 50px 30px;
+    max-width: 500px;
+    border: 1px solid #C1C1C1;
+    border-radius: 10px;
+}
+.login h3{
+    margin: 40px 0 50px 0;
+}
+.login button{
+    margin: 40px 20px 0 20px;
+}
+.login .form-group .control-label{
+    padding-left: 0;
+}
