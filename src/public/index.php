@@ -41,10 +41,18 @@ foreach ($result as $conf) {
 
 // controllers
 require 'src/controllers/home.php';
+require 'src/controllers/manage.php';
 
 $app->get('/test', '\HomeAction:test');
 $app->post('/exam', '\HomeAction:exam');
+$app->get('/manage', '\ManageAction:report');
+$app->get('/manage/logout', '\ManageAction:logout');
+$app->get('/manage/report/{id:[\d]+}', '\ManageAction:reportDetail');
+$app->get('/manage/{params:.*}', '\ManageAction:report');
+$app->post('/manage', '\ManageAction:login');
+$app->post('/manage/{params:.*}', '\ManageAction:login');
 $app->get('/{params:.*}', '\HomeAction:homepage');
 $app->post('/{params:.*}', '\HomeAction:register');
+
 
 $app->run();

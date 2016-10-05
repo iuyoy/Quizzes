@@ -22,10 +22,12 @@ class HomeAction{
         $response = $this->ci->view->render($response, "index.twig", $this->data);
         return $response;
     }
+
     public function test($request, $response, $args) {
         $response = $this->ci->view->render($response, "question_test.twig", $this->data);
         return $response;
     }
+
     public function register($request, $response, $args) {
         // var_dump($request->getParsedBody());
         $ret = false;
@@ -89,8 +91,8 @@ class HomeAction{
             $prepare -> execute(array(":uid"=>$_SESSION['uid']));
             $user = $prepare->fetch();
             if($user){
-                $user["finishedtime"] = date('Y-m-d H:i:s',time());
-                $gap = (strtotime($user["finishedtime"])-strtotime($user['starttime']));
+                $user["finishtime"] = date('Y-m-d H:i:s',time());
+                $gap = (strtotime($user["finishtime"])-strtotime($user['starttime']));
                 if($user["sign"] === '0' && $gap < 3720){
                     $sql = "INSERT INTO answers(qid,uid,answer,sign) VALUES(:qid,:uid,:answer,:sign)";
                     $prepare = $this->ci->db->prepare($sql);
@@ -103,9 +105,9 @@ class HomeAction{
                         }
                         $prepare -> execute(array(":qid"=>$qid,":uid"=>$_SESSION['uid'],":answer"=>$option,':sign'=>$sign));
                     }
-                    $sql = "UPDATE users SET `point` = :grade,`finishedtime` = :finishedtime, sign = 1 WHERE id = :uid";
+                    $sql = "UPDATE users SET `point` = :grade,`finishtime` = :finishtime, sign = 1 WHERE id = :uid";
                     $prepare = $this->ci->db->prepare($sql);
-                    $prepare -> execute(array(":grade"=>strval($grade),":finishedtime"=>$user['finishedtime'],":uid"=>$_SESSION['uid']));
+                    $prepare -> execute(array(":grade"=>strval($grade),":finishtime"=>$user['finishtime'],":uid"=>$_SESSION['uid']));
                     unset($_SESSION['uid']);
                     $response->getBody()->write("考试结束，耗时".strval((int)($gap/60))."分".strval($gap%60)."秒，祝您取得好成绩！");
                 }else{

@@ -76,7 +76,6 @@ function start(data) {
         questions = JSON.parse(data),
         current_id = 1;
     container.empty();
-    // container.html(questions);
     var quizzes =
         '<div class="col-xs-12">' +
         '<div class="col-xs-10">' +
@@ -191,7 +190,7 @@ function start(data) {
             success: function(data) {
                 if (data!==null)
                     alert(data);
-                // window.location.replace("./");
+                window.location.replace("./");
             }
         });
     };
