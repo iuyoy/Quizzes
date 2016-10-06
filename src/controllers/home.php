@@ -66,6 +66,7 @@ class HomeAction{
                 endif;
             }
             $_SESSION['uid'] = $ret;
+            setcookie('PHPSESSID', session_id(), time() +4800);
             $response->getBody()->write(json_encode($questions));
         else:
             $error = "出现未知错误，请稍后重试或者联系管理员。";
