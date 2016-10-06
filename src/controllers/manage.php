@@ -50,7 +50,7 @@ class ManageAction{
     public function report($request, $response, $args) {
         if(isset($_SESSION['admin'])){
             $this->data['active_column']='report';
-            $sql = "SELECT id,name,college,major,tel,starttime,finishtime,finishtime-starttime AS spenttime,`point` FROM users WHERE sign = 1 ORDER BY `point` DESC, spenttime ASC";
+            $sql = "SELECT id,name,college,major,tel,starttime,finishtime,TO_SECONDS(finishtime) -TO_SECONDS(starttime) AS spenttime,`point` FROM users WHERE sign = 1 ORDER BY `point` DESC, spenttime ASC";
             $reports = $this->ci->db->query($sql)->fetchAll();
             $this->data['reports'] = $reports;
             $response = $this->ci->view->render($response, "manage/report.twig", $this->data);
@@ -64,7 +64,7 @@ class ManageAction{
         if(isset($_SESSION['admin'])){
             $route = $request->getAttribute('route');
             $this->data['active_column']='report';
-            $sql = "SELECT id,name,college,major,tel,starttime,finishtime,finishtime-starttime  AS spenttime,`point`,sign FROM users WHERE id = :id";
+            $sql = "SELECT id,name,college,major,tel,starttime,finishtime,TO_SECONDS(finishtime) -TO_SECONDS(starttime) AS spenttime,`point`,sign FROM users WHERE id = :id";
             $prepare = $this->ci->db->prepare($sql);
             $prepare -> execute(array(":id"=>$route->getArgument('id')));
             $user = $prepare->fetch();
