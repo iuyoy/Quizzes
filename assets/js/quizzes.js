@@ -7,44 +7,26 @@
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
+            password: {
+                message: 'The number is not valid',
+                validators: {
+                    notEmpty: {
+                        message: 'The qualification code is required and can\'t be empty'
+                    },
+                    stringLength: {
+                        min: 8,
+                        max: 8,
+                        message: 'The qualification code must be 8 characters long'
+                    },
+                }
+            },
             name: {
-                message: 'The name is not valid',
                 validators: {
                     notEmpty: {
                         message: 'The name is required and can\'t be empty'
                     },
                 }
             },
-            college: {
-                validators: {
-                    notEmpty: {
-                        message: 'The college address is required and can\'t be empty'
-                    },
-                }
-            },
-            major: {
-                validators: {
-                    notEmpty: {
-                        message: 'The major is required and can\'t be empty'
-                    }
-                }
-            },
-            tel: {
-                validators: {
-                    notEmpty: {
-                        message: 'The tel is required and can\'t be empty'
-                    },
-                    stringLength: {
-                        min: 8,
-                        max: 11,
-                        message: 'The phone number must be more than 8 and less than 11 characters long'
-                    },
-                    regexp: {
-                        regexp: /^[0-9]+$/,
-                        message: 'The phone number can only consist of number.'
-                    }
-                }
-            }
         }
     }).on('success.form.bv', function(e) {
         // Prevent form submission
@@ -64,20 +46,26 @@
                 alert("出现未知错误，请稍后重试或者联系管理员。");
             },
             success: function(data) {
-                start(data);
+                data = JSON.parse(data);
+                if(data['status'] !== "on"){
+                    alert(data['result']);
+                    // alert("比赛还没有开始，或者已结束，若有疑问请联系管理员。");
+                }else{
+                    start(data['questions']);
+                }
             }
         });
     });
 })(jQuery);
 
 function start(data) {
-
     var container = $('.container'),
-        questions = JSON.parse(data),
+        questions = data,
         current_id = 1;
     container.empty();
     var quizzes =
         '<div class="col-xs-12">' +
+
         '<div class="col-xs-10">' +
         '<div class="progress">' +
         '<div class="progress-bar progress-bar-danger progress-bar-striped left-time-graph" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;">' +
@@ -95,6 +83,7 @@ function start(data) {
             '<div class="panel panel-primary quiz quiz-' + qid + ' hidden">' +
             '<div class="panel-heading type">' +
             '<h3 class="panel-title">' + questions[qid]['type'] + '</h3>' +
+
             '</div>' +
             '<div class="panel-body">' +
             '<div class="question">' +
@@ -112,6 +101,7 @@ function start(data) {
         quiz +=
             '</div>' +
             '<button type="button" class="btn btn-success next">下一题</button>' +
+            '<h3><b>答题过程中请不要刷新和关闭浏览器</b></h3>' +
             '</div>' +
             '</div>';
         quizzes += quiz;
@@ -135,29 +125,24 @@ function start(data) {
             $(".alert").toggleClass("hidden", false);
         }
     });
+    var endtime = new Date(2016, 9, 7, 20, 0, 0);
+    var now = new Date();
 
-    var total = parseInt(3600);
+    var total =  Math.floor((endtime.getTime() - now.getTime()) / 1000);
     var intDiff = total; //倒计时总秒数量
     var stoptimer = window.setInterval(function() {
-            var day = 0,
-                hour = 0,
-                minute = 0,
+            var minute = 0,
                 second = 0; //时间默认值
             if (intDiff > 0) {
-                day = Math.floor(intDiff / (60 * 60 * 24));
-                hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
-                minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
-                second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+                minute = Math.floor(intDiff / 60);
+                second = Math.floor(intDiff % 60);
             }
             if (minute <= 9) minute = '0' + minute;
             if (second <= 9) second = '0' + second;
-            // $('#day_show').html(day + "天");
-            // $('#hour_show').html('<s id="h"></s>' + hour + '时');
-            // $('#minute_show').html('<s></s>' + minute + '分');
             $('.left-time').html('剩余 ' + minute + '分' + second + '秒');
             $('.left-time-graph').attr({
-                'style': 'width: ' + String((total - intDiff) / total * 100) + '%',
-                'aria-valuenow': String((total - intDiff) / total * 100)
+                'style': 'width: ' + String((3600 - intDiff) / 3600 * 100) + '%',
+                'aria-valuenow': String((3600 - intDiff) / 3600 * 100)
             })
             if (intDiff === 0){
                 intDiff = -1;

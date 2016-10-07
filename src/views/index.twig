@@ -1,50 +1,66 @@
 {% extends "base.twig" %} {% block body %}
 <!-- Header -->
-    <header>
-        <center>
-            <h1>{{ webinfo["website_name"] }}</h1>
-        </center>
-    </header>
-    <!-- Content -->
-    <div class="container">
-        <div class="regulation sub-container">
-            <h2>{{ webinfo["regulation_title"] }}</h2>
-            <h4><b>{{ webinfo["regulation_subtitle"] }}</b></h4>
-            <div class="regulation-details">
-                <ol>
-                    {{ webinfo["regulation_details"] | raw }}
-                </ol>
-            </div>
-        </div>
-        <div class="register sub-container">
-            <h2>{{ webinfo["register_title"] }}</h2>
-            <form class="form-horizontal" role="form" method="POST" id="regist">
-                <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label required-validate">姓名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputName" placeholder="Name" name="name" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputCollege" class="col-sm-2 control-label">学院</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputCollege" placeholder="College" name="college" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputMajor" class="col-sm-2 control-label">专业</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputMajor" placeholder="Major" name="major" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputTel" class="col-sm-2 control-label">电话</label>
-                    <div class="col-sm-10">
-                        <input type="tel" class="form-control" id="inputTel" placeholder="Phone Number" name="tel" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-success btn-lg" id="start">开始答题</button>
-            </form>
+<header>
+    <center>
+        <h1>{{ webinfo["website_name"] }}</h1>
+    </center>
+</header>
+<!-- Content -->
+<div class="container">
+    <div class="regulation sub-container">
+        <h2>{{ webinfo["regulation_title"] }}</h2>
+        <h4><b>{{ webinfo["regulation_subtitle"] }}</b></h4>
+        <div class="regulation-details">
+            <ol>
+                {{ webinfo["regulation_details"] | raw }}
+            </ol>
         </div>
     </div>
-{% endblock %}
+    <div class="register sub-container">
+        <h2>{{ webinfo["register_title"] }}</h2> 当前时间为
+        <b class="now"></b>
+        <P>
+            竞赛时间为2016-10-07 19:00:00 - 20:00:00，请准时作答。
+        </P>
+        <p class="info">
+
+        </p>
+        <form class="form-horizontal regist" role="form" method="POST" id="regist">
+            <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">姓名</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputName" placeholder="Name" name="name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputQC" class="col-sm-2 control-label required-validate">资格码</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputQC" placeholder="Qualification Code" name="password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg" id="start">开始答题</button>
+        </form>
+
+    </div>
+    {% endblock %} {% block js %}
+    <script>
+        $(document).ready(function() {
+            var starttime = new Date(2016, 9, 7, 18, 59, 59);
+            var endtime = new Date(2016, 9, 7, 20, 0, 0);
+            window.setInterval(function() {
+                var now = new Date();
+                $(".now").html(now.toLocaleString());
+                if (now.getTime() < starttime.getTime()) {
+                    $(".info").html("比赛还没有开始。")
+                } else if (now > endtime) {
+                    $(".info").html("比赛结束。");
+                    $(".regist").toggleClass("hidden", true);
+                } else {
+                    $(".info").html("比赛进行中。")
+
+                }
+            }, 1000);
+
+        });
+    </script>
+    {% endblock %}

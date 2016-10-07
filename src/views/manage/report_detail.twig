@@ -1,31 +1,29 @@
 {% extends "manage/base.twig" %} {% block body %}
 <div class="reports">
 
-    {% if user.sign == '1' %}
+    {% if user %}
     <h3><b>个人信息</b></h3>
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>编号</th>
+                <th>学号</th>
                 <th>姓名</th>
                 <th>学院</th>
-                <th>专业</th>
+                <th>邮箱</th>
                 <th>电话</th>
                 <th class="success">得分</th>
-                <th>开始时间</th>
                 <th>结束时间</th>
                 <th class="info">耗时</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ user.id }}</td>
+                <td>{{ user.number }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.college }}</td>
-                <td>{{ user.major }}</td>
+                <td>{{ user.email }}</td>
                 <td>{{ user.tel }}</td>
                 <td class="success">{{ user.point }}</td>
-                <td>{{ user.starttime }}</td>
                 <td>{{ user.finishtime }}</td>
                 <td class="info">{{ user.spenttime//60 }}分{{ user.spenttime%60 }}秒</td>
             </tr>

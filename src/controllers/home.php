@@ -19,7 +19,14 @@ class HomeAction{
     }
 
     public function homepage($request, $response, $args) {
-        $response = $this->ci->view->render($response, "index.twig", $this->data);
+        // if(time() > strtotime("2016-10-07 19:59:58"))
+        if($request->isPost()){
+            $result = array('status' => 'end','result'=>'比赛已结束' );
+            $response->getBody()->write(json_encode($result));
+        }else{
+            $response = $this->ci->view->render($response, "index.twig", $this->data);
+        }
+
         return $response;
     }
 
@@ -27,52 +34,69 @@ class HomeAction{
         $response = $this->ci->view->render($response, "question_test.twig", $this->data);
         return $response;
     }
-
-    public function register($request, $response, $args) {
-        // var_dump($request->getParsedBody());
-        $ret = false;
+    public function loginTest($request, $response, $args) {
+        $result = array('status' => 'notstart', 'result'=>'' );
         $gets = $request->getParsedBody();
-        if(isset($gets['name'])&& isset($gets['college'])&& isset($gets['major'])&& isset($gets['tel'])):
+        if(isset($gets['name'])&& isset($gets['password'])){
             $arrData = array(
                 ':name'=>$gets['name'],
-                ':college'=>$gets['college'],
-                ':major'=>$gets['major'],
-                ':tel'=>$gets['tel'],
-                ':regtime'=>date('Y-m-d H:i:s',time()),
-                ':starttime'=>date('Y-m-d H:i:s',time())
+                ':password'=>$gets['password'],
             );
-            $sql = "INSERT INTO users (name,college,major,tel,regtime,starttime) VALUES(:name,:college,:major,:tel,:regtime,:starttime)";
+            $sql = "SELECT sign FROM users WHERE name = :name AND password = :password";
             $prepare = $this->ci->db->prepare($sql);
-            $prepare->execute($arrData);
-            $ret = $this->ci->db->lastInsertId();
-        endif;
-
-        if($ret):
-            $questions = array();
-            //The sql is not very good.
-            $sql = "SELECT q.id as id,q.content AS question, q.type AS type, o.`option` AS `optionid`, o.content AS `option` FROM `questions` AS q, `options` AS o WHERE q.id = o.qid";
-            $results = $this->ci->db->query($sql)->fetchAll();
-            foreach ($results as $result) {
-                if(array_key_exists($result['id'],$questions)):
-                    $questions[$result['id']]['options'][$result['optionid']] = $result['option'];
-                else:
-                    $questions[$result['id']] = array(
-                        "question" => $result['question'],
-                        "type" => $result['type'],
-                        "options" => array(
-                            $result['optionid'] => $result['option']
-                        )
-                    );
-                endif;
+            $prepare -> execute($arrData);
+            $user = $prepare->fetch();
+            if($user){
+                $result['result'] = '登陆成功，但是比赛还没有开始，请稍后再来。';
+            }else{
+                $result['result'] = '姓名或者资格码不正确，请重试。';
             }
-            $_SESSION['uid'] = $ret;
-            setcookie('PHPSESSID', session_id(), time() +4800);
-            $response->getBody()->write(json_encode($questions));
-        else:
-            $error = "出现未知错误，请稍后重试或者联系管理员。";
-            $response->getBody()->write("<script>alert(\"$error\")</script>");
-        endif;
+        }else{
+            $result['result'] = '请输入姓名和资格码！';
+        }
+        $response->getBody()->write(json_encode($result));
+    }
 
+    public function login($request, $response, $args) {
+        $result = array('status' => 'failed', 'result'=>'' );
+        $gets = $request->getParsedBody();
+        if(isset($gets['name'])&& isset($gets['password'])){
+            $arrData = array(
+                ':name'=>$gets['name'],
+                ':password'=>$gets['password'],
+            );
+            $sql = "SELECT id,sign FROM users WHERE name = :name AND password = :password";
+            $prepare = $this->ci->db->prepare($sql);
+            $prepare -> execute($arrData);
+            $user = $prepare->fetch();
+            if($user){
+                $questions = array();
+                //The sql is not very good.
+                $sql = "SELECT q.id as id,q.content AS question, q.type AS type, o.`option` AS `optionid`, o.content AS `option` FROM `questions` AS q, `options` AS o WHERE q.id = o.qid";
+                $querys = $this->ci->db->query($sql)->fetchAll();
+                foreach ($querys as $query) {
+                    if(array_key_exists($query['id'],$questions)):
+                        $questions[$query['id']]['options'][$query['optionid']] = $query['option'];
+                    else:
+                        $questions[$query['id']] = array(
+                            "question" => $query['question'],
+                            "type" => $query['type'],
+                            "options" => array(
+                                $query['optionid'] => $query['option']
+                            )
+                        );
+                    endif;
+                }
+                $_SESSION['uid'] = $user['id'];
+                $result['status'] = 'on';
+                $result['questions'] = $questions;
+            }else{
+                $result['result'] = '姓名或者资格码不正确，请重试。';
+            }
+        }else{
+            $result['result'] = '请输入姓名和资格码！';
+        }
+        $response->getBody()->write(json_encode($result));
         return $response;
     }
 

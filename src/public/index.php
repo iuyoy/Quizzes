@@ -43,17 +43,27 @@ foreach ($result as $conf) {
 // controllers
 require 'src/controllers/home.php';
 require 'src/controllers/manage.php';
+$now = time();
 
-$app->get('/test', '\HomeAction:test');
-$app->post('/exam', '\HomeAction:exam');
+// $app->get('/test', '\HomeAction:test');
 $app->get('/manage', '\ManageAction:report');
 $app->get('/manage/logout', '\ManageAction:logout');
 $app->get('/manage/report/{id:[\d]+}', '\ManageAction:reportDetail');
 $app->get('/manage/{params:.*}', '\ManageAction:report');
 $app->post('/manage', '\ManageAction:login');
 $app->post('/manage/{params:.*}', '\ManageAction:login');
+if($now < strtotime("2016-10-07 20:01:00")){
+    if($now > strtotime("2016-10-07 19:59:58")){
+        $app->post('/exam', '\HomeAction:exam');
+        $app->post('/{params:.*}', '\HomeAction:login');
+    }else{
+        $app->post('/{params:.*}', '\HomeAction:loginTest');
+    }
+}
+else{
+    $app->post('/{params:.*}', '\HomeAction:homepage');
+}
 $app->get('/{params:.*}', '\HomeAction:homepage');
-$app->post('/{params:.*}', '\HomeAction:register');
 
 
 $app->run();
